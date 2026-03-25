@@ -64,7 +64,10 @@ class NogenPDF(QMainWindow):
 
         self.label.setPixmap(QPixmap.fromImage(img))
 
-        self.setWindowTitle(f"Nogen PDF Reader - Página {self.page_number + 1}")
+        total = len(self.doc)
+        current = self.page_number + 1
+
+        self.setWindowTitle(f"Nogen PDF Reader - [{current}] de {total} páginas")
 
     def next_page(self):
         if self.doc and self.page_number < len(self.doc) - 1:
