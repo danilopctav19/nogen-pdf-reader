@@ -18,7 +18,7 @@ class NogenPDF(QMainWindow):
 
         self.label = QLabel("Abra um PDF")
         self.label.setAlignment(Qt.AlignCenter)
-        self.label.setStyleSheet("background color: #f4ecd8")
+        self.label.setStyleSheet("background-color: #2b2b2b;")
         self.setCentralWidget(self.label)
 
         self.doc = None
@@ -52,12 +52,14 @@ class NogenPDF(QMainWindow):
         page = self.doc.load_page(self.page_number)
         pix = page.get_pixmap()
 
+        fmt = QImage.Format_RGB888 if pix.n < 5 else QImage.Format_RGBA8888
+
         img = QImage(
             pix.samples,
             pix.width,
             pix.height,
             pix.stride,
-            QImage.Format_RGB888
+            fmt
         )
 
         self.label.setPixmap(QPixmap.fromImage(img))
