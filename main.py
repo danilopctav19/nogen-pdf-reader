@@ -15,6 +15,7 @@ class NogenPDF(QMainWindow):
 
         self.setWindowTitle("Nogen PDF Reader")
         self.resize(800, 600)
+        self.zoom = 1.0
 
         self.label = QLabel("Abra um PDF")
         self.label.setAlignment(Qt.AlignCenter)
@@ -35,10 +36,14 @@ class NogenPDF(QMainWindow):
         open_btn = toolbar.addAction("Abrir")
         prev_btn = toolbar.addAction("←")
         next_btn = toolbar.addAction("→")
+        zoom_in_btn = toolbar.addAction("+")
+        zoom_out_btn = toolbar.addAction("-")
 
         open_btn.triggered.connect(self.open_pdf)
         prev_btn.triggered.connect(self.prev_page)
         next_btn.triggered.connect(self.next_page)
+        zoom_in_btn.triggered.connect(self.zoom_in)
+        zoom_out_btn.triggered.connect(self.zoom_out)
 
         QShortcut(QKeySequence("Right"), self).activated.connect(self.next_page)
         QShortcut(QKeySequence("Left"), self).activated.connect(self.prev_page)
@@ -55,7 +60,9 @@ class NogenPDF(QMainWindow):
 
     def show_page(self):
         page = self.doc.load_page(self.page_number)
-        pix = page.get_pixmap()
+
+        mat = fitz.Matrix(self.zoom, self.zoom)
+        pix = page.get_pixmap(matrix=mat)
 
         fmt = QImage.Format_RGB888 if pix.n < 5 else QImage.Format_RGBA8888
 
@@ -84,6 +91,15 @@ class NogenPDF(QMainWindow):
             self.page_number -= 1
             self.show_page()
 
+    def zoom_in(self):
+        if self.doc:
+            self.zoom += 0.2
+            self.show_page()
+
+    def zoom_out(self):
+        if self.doc and self.zoom > 0.4:
+            self.zoom -= 0.2
+            self.show_page()
 
 app = QApplication(sys.argv)
 window = NogenPDF()
