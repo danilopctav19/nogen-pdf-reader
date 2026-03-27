@@ -2,7 +2,7 @@ import sys
 import fitz
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QLabel,
-    QFileDialog, QToolBar
+    QFileDialog, QToolBar, QScrollArea
 )
 from PySide6.QtGui import QPixmap, QImage, QShortcut, QKeySequence
 from PySide6.QtCore import Qt
@@ -18,8 +18,13 @@ class NogenPDF(QMainWindow):
 
         self.label = QLabel("Abra um PDF")
         self.label.setAlignment(Qt.AlignCenter)
-        self.label.setStyleSheet("background-color: #2b2b2b;")
-        self.setCentralWidget(self.label)
+        self.label.setStyleSheet("background-color: #2b2b2b; color: #dddddd")
+
+        self.scroll = QScrollArea()
+        self.scroll.setWidget(self.label)
+        self.scroll.setWidgetResizable(True)
+
+        self.setCentralWidget(self.scroll)
 
         self.doc = None
         self.page_number = 0
