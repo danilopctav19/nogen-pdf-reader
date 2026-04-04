@@ -2,7 +2,7 @@ import sys
 import fitz
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QLabel,
-    QFileDialog, QToolBar, QScrollArea
+    QFileDialog, QToolBar, QScrollArea, QLineEdit
 )
 from PySide6.QtGui import QPixmap, QImage, QShortcut, QKeySequence
 from PySide6.QtCore import Qt
@@ -44,6 +44,21 @@ class NogenPDF(QMainWindow):
         next_btn.triggered.connect(self.next_page)
         zoom_in_btn.triggered.connect(self.zoom_in)
         zoom_out_btn.triggered.connect(self.zoom_out)
+        
+        self.page_input = QLineEdit()
+        self.page_input.setFixedWidth(40)
+        self.page_input.setAlignment(Qt.AlignCenter)
+
+        self.page_total = QLabel("/0")
+
+        toolbar.addWidget(self.page_input)
+        toolbar.addWidget(self.page_total)
+
+        toolbar.addSeparator()
+        self.zoom_label = QLabel("100%")
+        toolbar.addWidget(self.zoom_label)
+
+        self.page_input.returnPressed.connect(self.go_to_page)
 
         QShortcut(QKeySequence("Right"), self).activated.connect(self.next_page)
         QShortcut(QKeySequence("Left"), self).activated.connect(self.prev_page)
@@ -79,7 +94,13 @@ class NogenPDF(QMainWindow):
         total = len(self.doc)
         current = self.page_number + 1
 
+        self.page_input.setText(str(current))
+        self.page_total.setText(f"/{total}")
+
         self.setWindowTitle(f"Nogen PDF Reader - [{current}] de {total} páginas")
+
+        zoom_percent = int(self.zoom * 100)
+        self.zoom_label.setText(f"{zoom_percent}%")
 
     def next_page(self):
         if self.doc and self.page_number < len(self.doc) - 1:
@@ -90,6 +111,16 @@ class NogenPDF(QMainWindow):
         if self.doc and self.page_number > 0:
             self.page_number -= 1
             self.show_page()
+
+    def go_to_page(self):
+        if self.doc:
+            try:
+                page = int(self.page_input.text()) - 1
+                if 0 <= page < len(self.doc):
+                    self.page_number = page
+                    self.show_page()
+            except:
+                pass
 
     def zoom_in(self):
         if self.doc:
