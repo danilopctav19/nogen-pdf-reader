@@ -24,8 +24,9 @@ class NogenPDF(QMainWindow):
         self.scroll = QScrollArea()
         self.scroll.setWidget(self.label)
         self.scroll.setWidgetResizable(True)
-
         self.setCentralWidget(self.scroll)
+        self.fit_width = False
+        self.fit_page = False
 
         self.doc = None
         self.page_number = 0
@@ -38,12 +39,14 @@ class NogenPDF(QMainWindow):
         next_btn = toolbar.addAction("→")
         zoom_in_btn = toolbar.addAction("+")
         zoom_out_btn = toolbar.addAction("-")
+        fit_btn = toolbar.addAction("Fit Width")
 
         open_btn.triggered.connect(self.open_pdf)
         prev_btn.triggered.connect(self.prev_page)
         next_btn.triggered.connect(self.next_page)
         zoom_in_btn.triggered.connect(self.zoom_in)
         zoom_out_btn.triggered.connect(self.zoom_out)
+        fit_btn.triggered.connect(self.toggle_fit_width)
         
         self.page_input = QLineEdit()
         self.page_input.setFixedWidth(40)
@@ -51,6 +54,7 @@ class NogenPDF(QMainWindow):
 
         self.page_total = QLabel("/0")
 
+        self.fit_btn = fit_btn
         toolbar.addWidget(self.page_input)
         toolbar.addWidget(self.page_total)
 
@@ -74,7 +78,23 @@ class NogenPDF(QMainWindow):
             self.show_page()
 
     def show_page(self):
+        if not self.doc:
+            return
+
         page = self.doc.load_page(self.page_number)
+
+        page_rect = page.rect
+
+        view_width = self.scroll.viewport().width()
+        view_height = self.scroll.viewport().height()
+
+        if self.fit_page:
+            zoom_w = view_width / page_rect.width
+            zoom_h = view_height / page_rect.height
+            self.zoom = min(zoom_w, zoom_h)
+
+        elif self.fit_width:
+            self.zoom = view_width / page_rect.width
 
         mat = fitz.Matrix(self.zoom, self.zoom)
         pix = page.get_pixmap(matrix=mat)
@@ -95,12 +115,12 @@ class NogenPDF(QMainWindow):
         current = self.page_number + 1
 
         self.page_input.setText(str(current))
-        self.page_total.setText(f"/{total}")
-
-        self.setWindowTitle(f"Nogen PDF Reader - [{current}] de {total} páginas")
+        self.page_total.setText(f"/ {total}")
 
         zoom_percent = int(self.zoom * 100)
         self.zoom_label.setText(f"{zoom_percent}%")
+
+        self.setWindowTitle(f"Nogen PDF Reader - [{current}] de {total}")
 
     def next_page(self):
         if self.doc and self.page_number < len(self.doc) - 1:
@@ -131,6 +151,16 @@ class NogenPDF(QMainWindow):
         if self.doc and self.zoom > 0.4:
             self.zoom -= 0.2
             self.show_page()
+
+    def toggle_fit_width(self):
+        self.fit_width = not self.fit_width
+    
+        if self.fit_width:
+            self.fit_btn.setText("Fit Width ON")
+        else:
+            self.fit_btn.setText("Fit Width OFF")
+    
+        self.show_page()
 
 app = QApplication(sys.argv)
 window = NogenPDF()
