@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
     QApplication, QMainWindow, QLabel,
     QFileDialog, QToolBar, QScrollArea, QLineEdit
 )
-from PySide6.QtGui import QPixmap, QImage, QShortcut, QKeySequence
+from PySide6.QtGui import QWheelEvent, QPixmap, QImage, QShortcut, QKeySequence
 from PySide6.QtCore import Qt
 
 
@@ -151,6 +151,26 @@ class NogenPDF(QMainWindow):
         if self.doc and self.zoom > 0.4:
             self.zoom -= 0.2
             self.show_page()
+
+    def wheelEvent(self, event: QWheelEvent):
+        if self.doc:
+            modifiers = QApplication.keyboardModifiers()
+
+            if modifiers == Qt.ControlModifier:
+                delta = event.angleDelta().y()
+
+                if delta > 0:
+                    self.zoom += 0.1
+                else:
+                    if self.zoom > 0.2:
+                        self.zoom -= 0.1
+
+                self.fit_width = False
+                self.fit_page = False
+
+                self.zoom = max(0.2, min(self.zoom, 5.0))
+
+                self.show_page()
 
     def toggle_fit_width(self):
         self.fit_width = not self.fit_width
