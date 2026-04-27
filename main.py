@@ -1,3 +1,5 @@
+import json
+import os
 import sys
 import fitz
 from PySide6.QtWidgets import (
@@ -20,6 +22,7 @@ class NogenPDF(QMainWindow):
         self.label = QLabel("Abra um PDF")
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setStyleSheet("background-color: #2b2b2b; color: #dddddd")
+        self.config_path = "config.json"
 
         self.scroll = QScrollArea()
         self.scroll.setWidget(self.label)
@@ -66,6 +69,8 @@ class NogenPDF(QMainWindow):
 
         QShortcut(QKeySequence("Right"), self).activated.connect(self.next_page)
         QShortcut(QKeySequence("Left"), self).activated.connect(self.prev_page)
+
+        self.load_config()
 
     def open_pdf(self):
         file, _ = QFileDialog.getOpenFileName(
@@ -121,6 +126,37 @@ class NogenPDF(QMainWindow):
         self.zoom_label.setText(f"{zoom_percent}%")
 
         self.setWindowTitle(f"Nogen PDF Reader - [{current}] de {total}")
+        self.save_config()
+
+    def save_config(self):
+        if not self.doc:
+            return
+
+        data = {
+            "last_file": self.doc.name,
+            "last_page": self.page_number
+        }
+
+        with open(self.config_path, "w") as f:
+            json.dump(data, f)
+
+    def load_config(self):
+        if not os.path.exists(self.config_path):
+            return
+        
+        try:
+            with open(self.config_path, "r") as f:
+                data = json.load(f)
+            file = data.get("last_file")
+            page = data.get("last_page", 0)
+
+            if file and os.path.exists(file):
+                self.doc = fitz.open(file)
+                self.page_number = page
+                self.show_page()
+
+        except:
+            pass
 
     def next_page(self):
         if self.doc and self.page_number < len(self.doc) - 1:
