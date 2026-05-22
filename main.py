@@ -134,7 +134,10 @@ class NogenPDF(QMainWindow):
 
         data = {
             "last_file": self.doc.name,
-            "last_page": self.page_number
+            "last_page": self.page_number,
+            "zoom": self.zoom,
+            "fit_width": self.fit_width,
+            "fit_page": self.fit_page
         }
 
         with open(self.config_path, "w") as f:
@@ -149,9 +152,15 @@ class NogenPDF(QMainWindow):
                 data = json.load(f)
             file = data.get("last_file")
             page = data.get("last_page", 0)
+            zoom = data.get("zoom", 1.0)
+            fit_width = data.get("fit_width", False)
+            fit_page = data.get("fit_page", False)
 
             if file and os.path.exists(file):
                 self.doc = fitz.open(file)
+                self.zoom = zoom
+                self.fit_width = fit_width
+                self.fit_page = fit_page
                 self.page_number = page
                 self.show_page()
 
