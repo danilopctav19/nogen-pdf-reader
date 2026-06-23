@@ -8,6 +8,10 @@ O **Nogen PDF Reader** é um aplicativo desktop que permite abrir e visualizar a
 
 O projeto foi desenvolvido com foco em aprendizado e prática de conceitos fundamentais de programação, incluindo interface gráfica, manipulação de arquivos e organização de código.
 
+## Demonstração
+
+![Relatório](screenshots/relatorio-pagina3.png)
+
 ## 🧰 Tecnologias utilizadas
 
 - Python
@@ -18,10 +22,13 @@ O projeto foi desenvolvido com foco em aprendizado e prática de conceitos funda
 
 - 📂 Abertura de arquivos PDF
 - 📄 Navegação entre páginas (botões e teclado)
-- 🔍 Zoom com botões (+ e -)
+- 🔍 Zoom com botões (+ e -) e roda do mouse
+- 🧠 Memória da última leitura
+- 📃 Fit Width
 - 🖱️ Scroll para visualização de páginas grandes
 - 🔢 Indicador de página atual no formato: [x] de y
 - 🌙 Interface em modo escuro
+- 📝 Campo editável para páginas e zoom
 
 ## 🎮 Controles
 
@@ -46,3 +53,8 @@ python main.py
 ## 📌 Observações
 
 Este projeto foi criado com fins educacionais e continua sendo aprimorado como parte do aprendizado em desenvolvimento de software.
+
+## 📄 Documentação
+
+- Manual do usuário
+- Relatório de demonstração

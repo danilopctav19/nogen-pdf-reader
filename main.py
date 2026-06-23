@@ -62,8 +62,16 @@ class NogenPDF(QMainWindow):
         toolbar.addWidget(self.page_total)
 
         toolbar.addSeparator()
-        self.zoom_label = QLabel("100%")
-        toolbar.addWidget(self.zoom_label)
+        self.zoom_input = QLineEdit("100")
+        self.zoom_input.setFixedWidth(50)
+        self.zoom_input.setAlignment(Qt.AlignCenter)
+
+        toolbar.addWidget(self.zoom_input)
+
+        percent = QLabel("%")
+        toolbar.addWidget(percent)
+
+        self.zoom_input.returnPressed.connect(self.set_zoom)
 
         self.page_input.returnPressed.connect(self.go_to_page)
 
@@ -123,7 +131,7 @@ class NogenPDF(QMainWindow):
         self.page_total.setText(f"/ {total}")
 
         zoom_percent = int(self.zoom * 100)
-        self.zoom_label.setText(f"{zoom_percent}%")
+        self.zoom_input.setText(str(zoom_percent))
 
         self.setWindowTitle(f"Nogen PDF Reader - [{current}] de {total}")
         self.save_config()
@@ -187,6 +195,22 @@ class NogenPDF(QMainWindow):
             except:
                 pass
 
+    def set_zoom(self):
+        if self.doc:
+            try:
+                value = float(self.zoom_input.text())
+
+                if 20 <= value <= 500:
+                    self.zoom = value / 100
+                    self.fit_width = False
+                    self.fit_page = False
+                    self.show_page()
+                else:
+                    self.show_page()
+
+            except ValueError:
+                self.show_page()
+
     def zoom_in(self):
         if self.doc:
             self.zoom += 0.2
@@ -221,9 +245,9 @@ class NogenPDF(QMainWindow):
         self.fit_width = not self.fit_width
     
         if self.fit_width:
-            self.fit_btn.setText("Fit Width ON")
+            self.fit_btn.setText("☑ Fit Width")
         else:
-            self.fit_btn.setText("Fit Width OFF")
+            self.fit_btn.setText("☐ Fit Width")
     
         self.show_page()
 
