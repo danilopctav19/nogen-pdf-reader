@@ -1,4 +1,8 @@
 # 📄 Nogen PDF Reader
+![Static Badge](https://img.shields.io/badge/Python-000080)
+![Static Badge](https://img.shields.io/badge/PySide6-00FF7F)
+![Static Badge](https://img.shields.io/badge/PyMuPDF-00FF7F)
+![Static Badge](https://img.shields.io/badge/Open_Source-363636)
 
 Um leitor de PDF simples desenvolvido em Python utilizando interface gráfica com PySide6 e renderização de páginas com PyMuPDF.
 
@@ -6,11 +10,11 @@ Um leitor de PDF simples desenvolvido em Python utilizando interface gráfica co
 
 O **Nogen PDF Reader** é um aplicativo desktop que permite abrir e visualizar arquivos PDF de forma prática, com navegação entre páginas e suporte a zoom.
 
-O projeto foi desenvolvido com foco em aprendizado e prática de conceitos fundamentais de programação, incluindo interface gráfica, manipulação de arquivos e organização de código.
+O projeto surgiu como uma iniciativa de aprendizado e evoluiu para um leitor de PDF de código aberto, desenvolvido em Python, com foco em simplicidade, desempenho e evolução contínua.
 
 ## Demonstração
 
-![Relatório](screenshots/relatorio-pagina3.png)
+![Relatório](screenshots/graficos.png)
 
 ## 🧰 Tecnologias utilizadas
 
@@ -29,6 +33,24 @@ O projeto foi desenvolvido com foco em aprendizado e prática de conceitos funda
 - 🔢 Indicador de página atual no formato: [x] de y
 - 🌙 Interface em modo escuro
 - 📝 Campo editável para páginas e zoom
+
+## 🚧 Roadmap
+
+### Concluído
+
+- ✅ Navegação entre páginas
+- ✅ Zoom
+- ✅ Campo de zoom editável
+- ✅ Memória da última leitura
+- ✅ Fit Width
+- ✅ Fit Page
+- ✅ Manual do usuário
+
+### Planejado
+
+- 📂 Histórico de arquivos recentes
+- 🔍 Pesquisa em documentos
+- 🖼️ Miniaturas de páginas
 
 ## 🎮 Controles
 
@@ -50,6 +72,15 @@ pip install PySide6 PyMuPDF
 python main.py
 ```
 
+## 💻 Compatibilidade
+
+| Sistema Operacional | Status |
+|---------------------|--------|
+| Windows 10/11 | ✅ |
+| Windows 7/8/8.1 (Legacy) | 🧪 |
+| Linux Mint | ✅ |
+| Ubuntu | 🧪 |
+
 ## 📌 Observações
 
 Este projeto foi criado com fins educacionais e continua sendo aprimorado como parte do aprendizado em desenvolvimento de software.
@@ -58,3 +89,9 @@ Este projeto foi criado com fins educacionais e continua sendo aprimorado como p
 
 - Manual do usuário
 - Relatório de demonstração
+
+## 🌱 Filosofia do projeto
+
+O Nogen PDF Reader busca oferecer uma experiência simples, leve e eficiente para leitura de documentos PDF.
+
+O projeto é desenvolvido como software livre, priorizando código limpo, compatibilidade entre plataformas e evolução contínua.
