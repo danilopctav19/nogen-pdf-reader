@@ -58,6 +58,7 @@ class NogenPDF(QMainWindow):
         zoom_in_btn = toolbar.addAction("+")
         zoom_out_btn = toolbar.addAction("-")
         fit_btn = toolbar.addAction("Fit Width")
+        fit_page_btn = toolbar.addAction("Fit Page")
 
         open_btn.triggered.connect(self.open_pdf)
         prev_btn.triggered.connect(self.prev_page)
@@ -65,6 +66,7 @@ class NogenPDF(QMainWindow):
         zoom_in_btn.triggered.connect(self.zoom_in)
         zoom_out_btn.triggered.connect(self.zoom_out)
         fit_btn.triggered.connect(self.toggle_fit_width)
+        fit_page_btn.triggered.connect(self.toggle_fit_page)
         
         self.page_input = QLineEdit()
         self.page_input.setFixedWidth(40)
@@ -73,6 +75,7 @@ class NogenPDF(QMainWindow):
         self.page_total = QLabel("/0")
 
         self.fit_btn = fit_btn
+        self.fit_page_btn = fit_page_btn
         toolbar.addWidget(self.page_input)
         toolbar.addWidget(self.page_total)
 
@@ -150,7 +153,11 @@ class NogenPDF(QMainWindow):
         zoom_percent = int(self.zoom * 100)
         self.zoom_input.setText(str(zoom_percent))
 
-        self.setWindowTitle(f"Nogen PDF Reader - [{current}] de {total}")
+        filename = os.path.basename(self.doc.name)
+
+        self.setWindowTitle(
+            f"Nogen PDF Reader - {filename} ({current}/{total})"
+        )
         self.save_config()
 
     def save_config(self):
@@ -235,6 +242,8 @@ class NogenPDF(QMainWindow):
                     self.zoom = value / 100
                     self.fit_width = False
                     self.fit_page = False
+                    self.fit_btn.setText("☐ Fit Width")
+                    self.fit_page_btn.setText("☐ Fit Page")
                     self.show_page()
                 else:
                     self.show_page()
@@ -274,13 +283,26 @@ class NogenPDF(QMainWindow):
 
     def toggle_fit_width(self):
         self.fit_width = not self.fit_width
-    
+
         if self.fit_width:
+            self.fit_page = False
             self.fit_btn.setText("☑ Fit Width")
+            self.fit_page_btn.setText("☐ Fit Page")
         else:
             self.fit_btn.setText("☐ Fit Width")
-    
+
         self.show_page()
+
+    def toggle_fit_page(self):
+        self.fit_page = not self.fit_page
+
+        if self.fit_page:
+            self.fit_width = False
+            self.fit_page_btn.setText("☑ Fit Page")
+            self.fit_btn.setText("☐ Fit Width")
+        else:
+            self.fit_page_btn.setText("☐ Fit Page")
+        self.show_page
 
     def update_recent_menu(self):
         self.recent_menu.clear()

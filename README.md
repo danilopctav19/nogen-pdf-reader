@@ -25,14 +25,17 @@ O projeto surgiu como uma iniciativa de aprendizado e evoluiu para um leitor de 
 ## ✨ Funcionalidades
 
 - 📂 Abertura de arquivos PDF
-- 📄 Navegação entre páginas (botões e teclado)
-- 🔍 Zoom com botões (+ e -) e roda do mouse
-- 🧠 Memória da última leitura
-- 📃 Fit Width
-- 🖱️ Scroll para visualização de páginas grandes
-- 🔢 Indicador de página atual no formato: [x] de y
-- 🌙 Interface em modo escuro
-- 📝 Campo editável para páginas e zoom
+- 📑 Histórico de arquivos recentes
+- 📄 Navegação entre páginas
+- 🔢 Campo para navegação direta por número da página
+- 🔍 Zoom por botões (+ e -)
+- ⌨️ Zoom por porcentagem editável
+- 🖱️ Zoom com `Ctrl + roda do mouse`
+- ↔️ Fit Width (ajuste à largura da janela)
+- 🖼️ Fit Page (ajuste da página inteira à janela)
+- 💾 Memorização automática do último documento aberto
+- 📍 Restauração da última página visualizada
+- 🔄 Restauração do último nível de zoom
 
 ## 🚧 Roadmap
 
