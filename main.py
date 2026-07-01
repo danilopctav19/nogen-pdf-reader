@@ -4,9 +4,13 @@ import sys
 import fitz
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QLabel,
-    QFileDialog, QToolBar, QScrollArea, QLineEdit
+    QFileDialog, QToolBar, QScrollArea,
+    QLineEdit, QToolButton, QMenu, QMessageBox
 )
-from PySide6.QtGui import QWheelEvent, QPixmap, QImage, QShortcut, QKeySequence
+from PySide6.QtGui import (
+    QAction, QWheelEvent, QPixmap,
+    QImage, QShortcut, QKeySequence
+)
 from PySide6.QtCore import Qt
 
 
@@ -33,11 +37,22 @@ class NogenPDF(QMainWindow):
 
         self.doc = None
         self.page_number = 0
+        self.recent_files = []
 
         toolbar = QToolBar()
         self.addToolBar(toolbar)
 
         open_btn = toolbar.addAction("Abrir")
+
+        self.recent_btn = QToolButton()
+        self.recent_btn.setText("Recentes")
+        self.recent_btn.setPopupMode(QToolButton.InstantPopup)
+
+        self.recent_menu = QMenu(self)
+        self.recent_btn.setMenu(self.recent_menu)
+
+        toolbar.addWidget(self.recent_btn)
+
         prev_btn = toolbar.addAction("←")
         next_btn = toolbar.addAction("→")
         zoom_in_btn = toolbar.addAction("+")
@@ -89,6 +104,8 @@ class NogenPDF(QMainWindow):
             self.doc = fitz.open(file)
             self.page_number = 0
             self.show_page()
+
+            self.add_recent_file(file)
 
     def show_page(self):
         if not self.doc:
@@ -145,7 +162,8 @@ class NogenPDF(QMainWindow):
             "last_page": self.page_number,
             "zoom": self.zoom,
             "fit_width": self.fit_width,
-            "fit_page": self.fit_page
+            "fit_page": self.fit_page,
+            "recent_files": self.recent_files
         }
 
         with open(self.config_path, "w") as f:
@@ -163,6 +181,8 @@ class NogenPDF(QMainWindow):
             zoom = data.get("zoom", 1.0)
             fit_width = data.get("fit_width", False)
             fit_page = data.get("fit_page", False)
+            self.recent_files = data.get("recent_files", [])
+            self.update_recent_menu()
 
             if file and os.path.exists(file):
                 self.doc = fitz.open(file)
@@ -174,6 +194,17 @@ class NogenPDF(QMainWindow):
 
         except:
             pass
+
+    def add_recent_file(self, filename):
+        if filename in self.recent_files:
+            self.recent_files.remove(filename)
+
+        self.recent_files.insert(0, filename)
+
+        self.recent_files = self.recent_files[:10]
+
+        self.save_config()
+        self.update_recent_menu()
 
     def next_page(self):
         if self.doc and self.page_number < len(self.doc) - 1:
@@ -250,6 +281,44 @@ class NogenPDF(QMainWindow):
             self.fit_btn.setText("☐ Fit Width")
     
         self.show_page()
+
+    def update_recent_menu(self):
+        self.recent_menu.clear()
+
+        if not self.recent_files:
+            action = QAction("(Nenhum arquivo recente)", self)
+            action.setEnabled(False)
+            self.recent_menu.addAction(action)
+            return
+
+        for path in self.recent_files:
+            filename = os.path.basename(path)
+
+            action = QAction(filename, self)
+            action.triggered.connect(
+                lambda checked=False, p=path: self.open_recent_file(p)
+            )
+
+        self.recent_menu.addAction(action)
+
+    def open_recent_file(self, path):
+        if not os.path.exists(path):
+            QMessageBox.warning(
+                self,
+                "Arquivo não encontrado",
+                "O arquivo foi movido, renomeado ou excluído."
+            )
+
+            self.recent_files.remove(path)
+            self.save_config()
+            self.update_recent_menu()
+            return
+
+        self.doc = fitz.open(path)
+        self.page_number = 0
+        self.show_page()
+
+        self.add_recent_file(path)
 
 app = QApplication(sys.argv)
 window = NogenPDF()
