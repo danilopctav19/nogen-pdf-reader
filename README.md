@@ -62,10 +62,17 @@ O projeto surgiu como uma iniciativa de aprendizado e evoluiu para um leitor de 
 - **Página anterior**: botão "←" ou tecla seta esquerda
 - **Zoom in**: botão "+"
 - **Zoom out**: botão "-"
+- **Os botões Fit Page e Fit Width são controles diferentes, portanto, podem ser ativados nas caixas de seleção.**
 
 ## ▶️ Como executar
 
 1. Instale as dependências:
+```bash
+pip install -r requirements.txt
+```
+
+Ou pelo modo convencional:
+
 ```bash
 pip install PySide6 PyMuPDF
 ```
@@ -81,7 +88,9 @@ python main.py
 |---------------------|--------|
 | Windows 10/11 | ✅ |
 | Windows 7/8/8.1 (Legacy) | 🧪 |
-| Linux Mint | ✅ |
+| Linux Mint 22.3 | ✅ |
+| Debian 13 | ✅ |
+| Zorin OS 18 | ✅ |
 | Ubuntu | 🧪 |
 
 ## 📌 Observações
